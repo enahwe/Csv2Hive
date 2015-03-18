@@ -134,7 +134,7 @@ $ csv2hive --create --parquet-create --parquet-db-name "myParquetDb" --parquet-t
 Cs2Hive will generates the two 'CREATE TABLE' statement files '.hql' and '.parquet'.
 
 ### Example 5 (creating a Hive table in two steps)
-It's possible first to generate the schema in order to modify the columns names before to create the Hive table. This could be especially useful when the CSV file hasn't header :
+It's possible first to generate the schema in order to modify the columns names, before to create the Hive table. This could be especially useful when the CSV file hasn't header :
 ```
 $ csv2schema --no-header airports.csv
 $ vi airports.schema
