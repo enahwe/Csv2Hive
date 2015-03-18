@@ -88,7 +88,7 @@ This example generates a 'CREATE TABLE' statement file in order to create a Hive
 ```
 $ csv2hive --create airports.csv
 ```
-Notes that from the new Hive statement file named 'airports.hql', the delimiter, the number of columns and the type for each column have been evaluated dynamically :
+Note that from the new Hive statement file named 'airports.hql', the delimiter, the number of columns and the type for each column have been evaluated dynamically :
 ```
 $ less airports.hql
 
