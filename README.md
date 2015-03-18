@@ -115,7 +115,7 @@ INPATH '/home/user/Csv2Hive/test/airports.csv' OVERWRITE INTO TABLE airports;
 ```
 
 ### Example 2 (specifying the names for database and table)
-You can specify the name of Hive database, and for the Hive table as follows :
+You can specify the name of Hive database, and the Hive table's name as follows :
 ```
 $ csv2hive --create --db-name "myDatabase" --table-name "myAirportTable" airports.csv
 ```
