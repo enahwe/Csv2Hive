@@ -84,11 +84,14 @@ optional arguments:
 ## Examples
 ### Example 1 (the simplest way to create a Hive table)
 
-This example generates the 'CREATE TABLE' statement file 'airports.hql' and creates a Hive table named 'airports'. Notes that the delimiter, the number of columns and the type for each column have been evaluated dynamically :
+This example generates a 'CREATE TABLE' statement file in order to create a Hive table named 'airports' :
 ```
 $ csv2hive --create airports.csv
-
+```
+Notes that from the new Hive statement file named 'airports.hql', the delimiter, the number of columns and the type for each column have been evaluated dynamically :
+```
 $ less airports.hql
+
 DROP TABLE airports;
 CREATE TABLE airports (
         Airport_ID int,
