@@ -143,10 +143,10 @@ Cs2Hive will generates the two 'CREATE TABLE' statement files '.hql' and '.parqu
 ### Example 6 (creating a Hive table in two steps)
 It's possible first to generate the schema in order to modify the columns names, before to create the Hive table. This could be especially useful when the CSV file hasn't header :
 ```
-$ csv2schema --no-header airports.csv
+$ csv2schema --no-header airports-no_header.csv
 $ vi airports.schema
 ```
 After modifying the columns names, then you can create the Hive table as follows :
 ```
-$ schema2hive --create airports.csv
+$ schema2hive --create airports-no_header.csv
 ```
