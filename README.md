@@ -115,32 +115,32 @@ INPATH '/home/user/Csv2Hive/test/airports.csv' OVERWRITE INTO TABLE airports;
 ```
 
 ### Example 2 (specifying a delimiter)
-You can specify a delimiter (even if Csv2Hive already detects the following delimiters {',' '\\\t' ';' ' '}).
+You can specify a delimiter (even if Csv2Hive already detects the following delimiters {',' '\\t' ';' ' '}).
 The following example specifies a tab delimiter by using the TSV (Tab-Separated Values) file 'airports.tsv' :
 ```
 $ csv2hive --create -d '\t' airports.tsv
 ```
 
-### Example 2 (specifying the names for database and table)
+### Example 3 (specifying the names for database and table)
 You can specify the name of Hive database, and the Hive table's name as follows :
 ```
 $ csv2hive --create --db-name "myDatabase" --table-name "myAirportTable" airports.csv
 ```
 
-### Example 3 (no creating the table on Hive)
+### Example 4 (no creating the table on Hive)
 If you don't want to create the table on Hive or if Hive is not installed on the same machine, don't use the '--create' option (anyway Cs2Hive will generates for you a '.hql' file) :
 ```
 $ csv2hive airports.csv
 ```
 
-### Example 4 (create a Parquet table just after the Hive table)
+### Example 5 (create a Parquet table just after the Hive table)
 You can create a Parquet table just after creating the Hive table as follows :
 ```
 $ csv2hive --create --parquet-create --parquet-db-name "myParquetDb" --parquet-table-name "myAirportTable" airports.csv
 ```
 Cs2Hive will generates the two 'CREATE TABLE' statement files '.hql' and '.parquet'.
 
-### Example 5 (creating a Hive table in two steps)
+### Example 6 (creating a Hive table in two steps)
 It's possible first to generate the schema in order to modify the columns names, before to create the Hive table. This could be especially useful when the CSV file hasn't header :
 ```
 $ csv2schema --no-header airports.csv
