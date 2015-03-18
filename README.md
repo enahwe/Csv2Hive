@@ -114,6 +114,13 @@ LOAD DATA LOCAL
 INPATH '/home/user/Csv2Hive/test/airports.csv' OVERWRITE INTO TABLE airports;
 ```
 
+### Example 2 (specifying a delimiter)
+You can specify a delimiter (even if Csv2Hive already detects the following delimiters {',' '\\\t' ';' ' '}).
+The following example specifies a tab delimiter by using the TSV (Tab-Separated Values) file 'airports.tsv' :
+```
+$ csv2hive --create -d '\t' airports.tsv
+```
+
 ### Example 2 (specifying the names for database and table)
 You can specify the name of Hive database, and the Hive table's name as follows :
 ```
