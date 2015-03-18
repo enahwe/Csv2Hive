@@ -115,8 +115,8 @@ INPATH '/home/user/Csv2Hive/test/airports.csv' OVERWRITE INTO TABLE airports;
 ```
 
 ### Example 2 (specifying a delimiter)
-You can specify a delimiter (even if Csv2Hive already detects the following delimiters {',' '\\t' ';' ' '}).
-The following example specifies a tab delimiter by using the TSV (Tab-Separated Values) file 'airports.tsv' :
+You can specify a delimiter but it's optional (Csv2Hive already detects the following delimiters {','  '\\t'  ';'  ' '}).
+The example bellow specifies a tab delimiter by using the TSV (Tab-Separated Values) file 'airports.tsv' :
 ```
 $ csv2hive --create -d '\t' airports.tsv
 ```
