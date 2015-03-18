@@ -129,7 +129,7 @@ $ csv2hive airports.csv
 ### Example 4 (create a Parquet table just after the Hive table)
 You can create a Parquet table just after creating the Hive table as follows :
 ```
-$ csv2hive --create --parquet-db-name parquetDb --parquet-create airports.csv
+$ csv2hive --create --parquet-create --parquet-db-name "myParquetDb" --parquet-table-name "myAirportTable" airports.csv
 ```
 Cs2Hive will generates the two 'CREATE TABLE' statement files '.hql' and '.parquet'.
 
