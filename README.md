@@ -121,7 +121,7 @@ $ csv2hive --create --db-name "myDatabase" --table-name "myAirportTable" airport
 ```
 
 ### Example 3 (no creating the table on Hive)
-If you don't want to create the table on Hive or if Hive is not installed on the same machine, don't use the '--create' option. Cs2Hive will generates a '.hql' file :
+If you don't want to create the table on Hive or if Hive is not installed on the same machine, don't use the '--create' option, but Cs2Hive will generates for you a '.hql' file :
 ```
 $ csv2hive airports.csv
 ```
