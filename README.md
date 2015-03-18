@@ -131,20 +131,15 @@ You can create a Parquet table just after creating the Hive table as follows :
 ```
 $ csv2hive --create --parquet-db-name parquetDb --parquet-create airports.csv
 ```
+Cs2Hive will generates the two 'CREATE TABLE' statement files '.hql' and '.parquet'.
 
-### Example 5 (no creating the Parquet table)
-If you want to create the Hive table but not the Parquet table, don't use the '--parquet-create' option. Cs2Hive will generates the two files '.hql' and '.parquet' :
-```
-$ csv2hive --create airports.csv
-```
-
-### Example 6 (creating a Hive table in two steps)
-You can first generate the schema in order to modify the columns names before to create the Hive table. This is useful when the CSV file hasn't header :
+### Example 5 (creating a Hive table in two steps)
+It's possible first to generate the schema in order to modify the columns names before to create the Hive table. This could be especially useful when the CSV file hasn't header :
 ```
 $ csv2schema --no-header airports.csv
 $ vi airports.schema
 ```
-After modifying the columns names, you can create the Hive table as follows :
+After modifying the columns names, then you can create the Hive table as follows :
 ```
 $ schema2hive --create airports.csv
 ```
