@@ -148,7 +148,7 @@ It's possible first to generate the schema in order to modify the columns names,
 $ csv2schema --no-header airports-no_header.csv
 $ vi airports-no_header.schema
 ```
-After modifying the columns names, then you can generate the Hive 'CREATE TABLE' statement file as follows :
+After modifying the columns names in the file named 'airports-no_header.schema', then you can generate the Hive 'CREATE TABLE' statement file as follows :
 ```
 $ schema2hive airports-no_header.csv
 ```
