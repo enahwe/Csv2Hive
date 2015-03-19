@@ -23,11 +23,13 @@ optional arguments:
   -d DELIMITER, --delimiter DELIMITER
 		Specify the delimiter used in the CSV file.
 		If not present without -t nor --tab, then the delimiter will
-		be discovered automatically between {',' '\\\t' ';' ' '}.
+		be discovered automatically between :
+		{\",\" \"\\\t\" \";\" \" \"}.
   -t, --tab	Indicates that the tab delimiter is used in the CSV file.
 		Overrides -d and --delimiter.
 		If not present without -d nor --delimiter, then the delimiter
-		will be discovered automatically between {',' '\\\t' ';' ' '}.
+		will be discovered automatically between :
+		{\",\" \"\\\t\" \";\" \" \"}.
   --db-name DB_NAME
 		Optional name of Hive database where to create the table.
   --table-name TABLE_NAME
