@@ -5,7 +5,7 @@
 
 ## "The data together with its schema, is fully self-describing"
 
-The philosophy of Csv2Hive is that the data, together with its schema, is fully self-describing. This approach is purely dynamic, so you don't need to write any schemas at all. To allow this dynamic behaviour, Csv2Hive parses automatically the first thousands lines for each CSV file it operates, in order to evaluate the right type for each column. Further to facilitate the automation, Csv2Hive evaluates dynamically which kind of delimiter each CSV file is using.
+The philosophy of Csv2Hive is that the data, together with its schema, is fully self-describing. This approach is dynamic, so you don't need to write any schemas at all. To allow this dynamic behaviour, Csv2Hive parses automatically the first thousands lines for each CSV file it operates, in order to infer the right types for all columns. Further to facilitate the automation, Csv2Hive infers dynamically which kind of delimiter each CSV file is using.
 
 ## Requirements
 * Requires a Unix or a Linux operating system to run
