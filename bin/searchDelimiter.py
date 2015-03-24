@@ -10,7 +10,7 @@ import sys
 # --------------------------------------------------------------------------------
 def searchDelimiterWithHighestAndSameFrequency(string1, string2):
 	delimiter = "NO_DELIMITER"
-	knownDelimiters = [",", "\t", ";", " "];
+	knownDelimiters = [",", "\t", ";", "|", " "];
 	n0 = 1
 	for d in knownDelimiters:
 		n1 = len(string1.split(d))

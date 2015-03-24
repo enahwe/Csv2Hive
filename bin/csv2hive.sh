@@ -22,12 +22,12 @@ optional arguments:
 		Specify the delimiter used in the CSV file.
 		If not present without -t nor --tab, then the delimiter will
 		be discovered automatically between :
-		{\",\" \"\\\t\" \";\" \" \"}.
+		{\",\" \"\\\t\" \";\" \"|\" \" \"}.
   -t, --tab	Indicates that the tab delimiter is used in the CSV file.
 		Overrides -d and --delimiter.
 		If not present without -d nor --delimiter, then the delimiter
 		will be discovered automatically between :
-		{\",\" \"\\\t\" \";\" \" \"}.
+		{\",\" \"\\\t\" \";\" \"|\" \" \"}.
   --no-header	If present, indicates that the CSV file hasn't header.
 		Then the columns will be named 'column1', 'column2', and so on.
   --db-name DB_NAME
