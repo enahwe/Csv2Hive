@@ -303,25 +303,31 @@ if [ ! "${PARQUET_DB_NAME}" = "" ]; then
 	echo -e "${PARQUET_TEMPLATE}" > "${PARQUET_TABLE_FILE}"
 fi
 
+# Checks if the hive executable exists
+HIVE_EXISTS=0
+if which "hive" >/dev/null; then
+	HIVE_EXISTS=1
+fi
+
 # Create the Hive table if asked
 if [ "${HIVE_CREATE}" = "1" ]; then
-        if [ ! -f "hive" ]; then
+        if [ "${HIVE_EXISTS}" = "1" ]; then
+                hive -f "${HIVE_TABLE_FILE}"
+        else
                 echo "-> Warning: The executable 'hive' doesn't exists !"
 		echo "            Don't use \"--create\" to avoid this warning the next time."
                 echo "            Anyway, a Hive 'CREATE TABLE' file named \"${HIVE_TABLE_NAME}.hql\" has been generated."
-        else
-                hive -f "${HIVE_TABLE_FILE}"
         fi
 fi
 
 # Create the Parquet table if asked
 if [ "${PARQUET_CREATE}" = "1" ]; then
-        if [ ! -f "hive" ]; then
+        if [ "${HIVE_EXISTS}" = "1" ]; then
+                hive -f "${PARQUET_TABLE_FILE}"
+        else
                 echo "-> Warning: The executable 'hive' doesn't exists !"
                 echo "            Don't use \"--parquet-create\" to avoid this warning the next time."
                 echo "            Anyway, a Parquet 'CREATE TABLE' file named \"${PARQUET_TABLE_NAME}.hql\" has been generated."
-        else
-                hive -f "${PARQUET_TABLE_FILE}"
         fi
 fi
 
