@@ -153,6 +153,14 @@ do
         fi
 
 	# OPTIONS TO SKIP
+	if [ "$param" = "-s" ] || [ "$param" = "--separated-header" ]; then
+                option="OPTION_SEPARATED_HEADER"
+                continue
+        fi
+        if [ "$option" = "OPTION_SEPARATED_HEADER" ]; then
+                option=""
+                continue
+        fi
         if [ "$param" = "--no-header" ]; then
                 continue
         fi

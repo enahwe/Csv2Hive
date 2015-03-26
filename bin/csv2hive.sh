@@ -28,6 +28,10 @@ optional arguments:
 		If not present without -d nor --delimiter, then the delimiter
 		will be discovered automatically between :
 		{\",\" \"\\\t\" \";\" \"|\" \" \"}.
+  -s SEPARATED_HEADER, --separated-header SEPARATED_HEADER
+                Specify a separated header file that contains the header,
+                its delimiter must be the same as the delimiter in the CSV file.
+                Overrides --no-header.
   --no-header	If present, indicates that the CSV file hasn't header.
 		Then the columns will be named 'column1', 'column2', and so on.
   --db-name DB_NAME

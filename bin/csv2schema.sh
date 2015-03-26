@@ -26,6 +26,10 @@ optional arguments:
 		If not present without -d nor --delimiter, then the delimiter
 		will be discovered automatically between :
 		{\",\" \"\\\t\" \";\" \"|\" \" \"}.
+  -s SEPARATED_HEADER, --separated-header SEPARATED_HEADER
+		Specify a separated header file that contains the header,
+		its delimiter must be the same as the delimiter in the CSV file.
+		Overrides --no-header.
   --no-header	If present, indicates that the CSV file hasn't header.
 		Then the columns will be named 'column1', 'column2', and so on.
 "
@@ -80,6 +84,33 @@ do
 		CSV_NO_HEADER="1"
 		continue
 	fi
+
+	# SEPARATED_HEADER
+	if [ "$param" = "-s" ] || [ "$param" = "--separated-header" ]; then
+                option="OPTION_SEPARATED_HEADER"
+                continue
+        fi
+        if [ "$option" = "OPTION_SEPARATED_HEADER" ]; then
+                option=""
+                SEPARATED_HEADER_FILE=$param
+		SEPARATED_HEADER_DIR=`(cd \`dirname ${SEPARATED_HEADER_FILE}\`; pwd)`
+		# If the separated header file is a symbolic link
+		if [[ -L "${SEPARATED_HEADER_FILE}" ]]
+		then
+			SEPARATED_HEADER_FILE=`ls -la ${SEPARATED_HEADER_FILE} | cut -d">" -f2`
+			SEPARATED_HEADER_DIR=`(cd \`dirname ${SEPARATED_HEADER_FILE}\`; pwd)`
+		fi
+		SEPARATED_HEADER_BASENAME=$(basename ${SEPARATED_HEADER_FILE})
+		SEPARATED_HEADER_FILENAME=${SEPARATED_HEADER_BASENAME%.*}
+		SEPARATED_HEADER_EXTENSION="${SEPARATED_HEADER_BASENAME##*.}"
+                continue
+        fi
+
+	# CSV_NO_HEADER
+        if [ "$param" = "--no-header" ]; then
+                CSV_NO_HEADER="1"
+                continue
+        fi
 
 	# PARENT_CALL
         if [ "$param" = "--parent-call" ]; then
@@ -174,25 +205,6 @@ if [ "${WORK_DIR}" = "" ]; then
 	WORK_DIR=${CSV_DIR}
 fi
 
-# The CSV head file
-CSV_HEAD_EXTENSION="head"
-CSV_HEAD_FILENAME=${CSV_FILENAME}
-CSV_HEAD_DIR=${WORK_DIR}
-CSV_HEAD_FILE=${CSV_HEAD_DIR}/${CSV_HEAD_FILENAME}.${CSV_HEAD_EXTENSION}
-
-# Search the delimiter if not defined
-if [ "${CSV_DELIMITER}" = "" ]; then
-        head -2 "${CSV_FILE}" > "${CSV_HEAD_FILE}"
-        STRING_1=`head -1 "${CSV_HEAD_FILE}"`
-        STRING_2=`tail -1 "${CSV_HEAD_FILE}"`
-        rm -rf "${CSV_HEAD_FILE}"
-        CSV_DELIMITER=`python "${SCRIPT_DIR}/searchDelimiter.py" "${STRING_1}" "${STRING_2}"`
-        if [ "${CSV_DELIMITER}" = "NO_DELIMITER" ]; then
-                echo "- Error: Delimiter not found !"
-                exit 1
-        fi
-fi
-
 # The CSV short file
 CSV_SHORT_EXTENSION="short"
 CSV_SHORT_FILENAME=${CSV_FILENAME}
@@ -253,6 +265,29 @@ G\$x
 
 # Create the csv short file used for the csvsql command
 head -10000 "${CSV_FILE}" > "${CSV_SHORT_FILE}"
+
+# If it exists a separated header file then concat it with the csv short file
+if [ ! "${SEPARATED_HEADER_FILE}" = "" ]; then
+	cp "${SEPARATED_HEADER_FILE}" "${CSV_SHORT_FILE}~"
+	cat "${CSV_SHORT_FILE}" >> "${CSV_SHORT_FILE}~"
+	mv "${CSV_SHORT_FILE}~" "${CSV_SHORT_FILE}"
+	CSV_NO_HEADER="0"
+fi
+
+# Search the delimiter if not defined
+if [ "${CSV_DELIMITER}" = "" ]; then
+        TWO_FIRST_LINES_FILE=${WORK_DIR}/${CSV_FILENAME}.2FirstLines
+        head -2 "${CSV_SHORT_FILE}" > "${TWO_FIRST_LINES_FILE}"
+        STRING_1=`head -1 "${TWO_FIRST_LINES_FILE}"`
+        STRING_2=`tail -n +2 "${TWO_FIRST_LINES_FILE}"`
+        rm -rf "${TWO_FIRST_LINES_FILE}"
+        CSV_DELIMITER=`python "${SCRIPT_DIR}/searchDelimiter.py" "${STRING_1}" "${STRING_2}"`
+        if [ "${CSV_DELIMITER}" = "NO_DELIMITER" ]; then
+                echo "- Error: Delimiter not found !"
+		echo "         Or maybe the number of delimiters are differents between the two first lines !"
+                exit 1
+        fi
+fi
 
 # Specify the delimiter option for the csvsql command
 CSVSQL_OPTS=
