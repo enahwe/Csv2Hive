@@ -153,7 +153,7 @@ Or you can create directly the Hive table as follows :
 $ schema2hive --create airports-no_header.csv
 ```
 ### Example 6 (creating a Hive table from a separated header)
-Sometimes you have to upload some big Dumps which consist in big CSV files but without inner headers, also those files are often accompanied by a small separated file which contains the header.
+Sometimes you have to upload some big Dumps which consist in big CSV files but without inner headers, also those files are often accompanied by a small separated file which describes the header.
 ```
 $ csv2hive.sh --create -s airports.header --table-name airports airports-noheader.csv
 ```
