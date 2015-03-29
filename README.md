@@ -1,6 +1,3 @@
-[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif "Donate for Csv2Hive")]
-(https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Z2CBDC45UYGKN)
-
 ![](/Csv2Hive.png "Csv2Hive")
 
 ## "The data together with its schema, is fully self-describing"
@@ -160,3 +157,6 @@ Or you can create directly the Hive table as follows :
 ```
 $ schema2hive --create airports-no_header.csv
 ```
+
+[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif "Donate for Csv2Hive")]
+(https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Z2CBDC45UYGKN)
