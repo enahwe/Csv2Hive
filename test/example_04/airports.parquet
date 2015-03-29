@@ -1,0 +1,22 @@
+DROP TABLE myParquetDb.myAirportTable;
+CREATE TABLE myParquetDb.myAirportTable (
+	Airport_ID int,
+	Name string,
+	City string,
+	Country string,
+	IATA_FAA string,
+	ICAO string,
+	Latitude float,
+	Longitude float,
+	Altitude int,
+	Timezone float,
+	DST string,
+	Tz_db_time_zone string
+)
+COMMENT "The table [myParquetDb.myAirportTable]"
+ROW FORMAT SERDE 'parquet.hive.serde.ParquetHiveSerDe'
+  STORED AS
+    INPUTFORMAT "parquet.hive.DeprecatedParquetInputFormat"
+    OUTPUTFORMAT "parquet.hive.DeprecatedParquetOutputFormat";
+set parquet.compression="snappy";
+INSERT OVERWRITE TABLE myParquetDb.myAirportTable SELECT * FROM airports;

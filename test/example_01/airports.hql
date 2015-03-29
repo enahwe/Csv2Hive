@@ -1,5 +1,5 @@
-DROP TABLE myDatabase.myAirportTable;
-CREATE TABLE myDatabase.myAirportTable (
+DROP TABLE airports;
+CREATE TABLE airports (
 	Airport_ID int,
 	Name string,
 	City string,
@@ -13,8 +13,8 @@ CREATE TABLE myDatabase.myAirportTable (
 	DST string,
 	Tz_db_time_zone string
 )
-COMMENT "The table [myAirportTable]"
+COMMENT "The table [airports]"
 ROW FORMAT DELIMITED
-FIELDS TERMINATED BY '\,'
+FIELDS TERMINATED BY '\,';
 LOAD DATA LOCAL
-INPATH '/home/user/Csv2Hive/test/airports.csv' OVERWRITE INTO TABLE myDatabase.myAirportTable;
+INPATH '/home/user/Csv2Hive/test/data/airports.csv' OVERWRITE INTO TABLE airports;

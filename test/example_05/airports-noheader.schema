@@ -1,0 +1,12 @@
+column1 int,
+column2 string,
+column3 string,
+column4 string,
+myModifiedColumn5 string,
+column6 string,
+column7 float,
+column8 float,
+myModifiedColumn9 int,
+column10 float,
+column11 string,
+column12 string
