@@ -157,7 +157,7 @@ Sometimes you have to upload some big dumps which consist in big CSV files but w
 ```
 $ csv2hive.sh --create -s airports.header --table-name airports airports-noheader.csv
 ```
-To upload the CSV file with another name to HDFS ('airports.csv' rather 'airports-noheader.csv'), it could be nicer to create a symbolic link before.
+Trick: To upload the CSV file to HDFS with a different name ('airports.csv' rather 'airports-noheader.csv'), it could be nicer to create a symbolic link before.
 
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif "Donate for Csv2Hive")]
 (https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Z2CBDC45UYGKN)
