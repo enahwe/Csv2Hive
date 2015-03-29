@@ -50,6 +50,7 @@ optional arguments:
 ALL_ARGS="$0 $@"
 option=""
 counter=-1
+CURRENT_DIR=`pwd`
 for param in ${ALL_ARGS}
 do
 	counter=$((counter+1))
@@ -169,15 +170,9 @@ do
 	if [ "${CSV_FILE}" = "" ]; then
 		CSV_FILE=$param
 		CSV_DIR=`(cd \`dirname ${CSV_FILE}\`; pwd)`
-                # If the input csv file is a symbolic link
-                if [[ -L "${CSV_FILE}" ]]
-                then
-                        CSV_FILE=`ls -la ${CSV_FILE} | cut -d">" -f2`
-                        CSV_DIR=`(cd \`dirname ${CSV_FILE}\`; pwd)`
-                fi
                 CSV_BASENAME=$(basename ${CSV_FILE})
                 CSV_FILENAME=${CSV_BASENAME%.*}
-		CSV_EXTENSION="${CSV_BASENAME##*.}"
+		#CSV_EXTENSION="${CSV_BASENAME##*.}"
 		continue
 	fi
 
@@ -209,14 +204,11 @@ fi
 
 # If the work directory argument is missing, then takes the CSV file directory
 if [ "${WORK_DIR}" = "" ]; then
-	WORK_DIR=${CSV_DIR}
+	WORK_DIR=${CURRENT_DIR}
 fi
 
 # The CSV head file
-CSV_HEAD_EXTENSION="head"
-CSV_HEAD_FILENAME=${CSV_FILENAME}
-CSV_HEAD_DIR=${WORK_DIR}
-CSV_HEAD_FILE=${CSV_HEAD_DIR}/${CSV_HEAD_FILENAME}.${CSV_HEAD_EXTENSION}
+CSV_HEAD_FILE=${WORK_DIR}/${CSV_FILENAME}.head
 
 # Search the delimiter if not specified
 if [ "${CSV_DELIMITER}" = "" ]; then
@@ -231,12 +223,6 @@ if [ "${CSV_DELIMITER}" = "" ]; then
         fi
 fi
 
-# The schema file
-SCHEMA_EXTENSION="schema"
-SCHEMA_FILENAME=${CSV_FILENAME}
-SCHEMA_DIR=${WORK_DIR}
-SCHEMA_FILE=${SCHEMA_DIR}/${SCHEMA_FILENAME}.${SCHEMA_EXTENSION}
-
 # The Hive table name: If missing we use the CSV file name minus extension
 if [ "${HIVE_TABLE_NAME}" = "" ]; then
         HIVE_TABLE_NAME="${CSV_FILENAME}"
@@ -247,23 +233,20 @@ if [ ! "${PARQUET_DB_NAME}" = "" ] && [ "${PARQUET_TABLE_NAME}" = "" ]; then
         PARQUET_TABLE_NAME="${CSV_FILENAME}"
 fi
 
-# The Hive table file
-HIVE_TABLE_EXTENSION="hql"
-HIVE_TABLE_FILENAME=${CSV_FILENAME}
-HIVE_TABLE_DIR=${WORK_DIR}
-HIVE_TABLE_FILE=${HIVE_TABLE_DIR}/${HIVE_TABLE_FILENAME}.${HIVE_TABLE_EXTENSION}
+# The schema file
+SCHEMA_FILE=${WORK_DIR}/${CSV_FILENAME}.schema
 
-# The vars to build the Hive template
+# The Hive CREATE TABLE file
+HIVE_TABLE_FILE=${WORK_DIR}/${CSV_FILENAME}.hql
+
+# The parquet CREATE TABLE file
+PARQUET_TABLE_FILE=${WORK_DIR}/${CSV_FILENAME}.parquet
+
+# The vars for building the Hive template
 HIVE_TABLE_MODEL=`sed -e 's/^/\t/' ${SCHEMA_FILE}`
 HIVE_TABLE_DELIMITER=${CSV_DELIMITER}
 HIVE_TABLE_COMMENT="The table [${HIVE_TABLE_NAME}]"
 PARQUET_TABLE_COMMENT="The parquet table [${PARQUET_TABLE_NAME}]"
-
-# The parquet table file
-PARQUET_TABLE_EXTENSION="parquet"
-PARQUET_TABLE_FILENAME=${CSV_FILENAME}
-PARQUET_TABLE_DIR=${WORK_DIR}
-PARQUET_TABLE_FILE=${PARQUET_TABLE_DIR}/${PARQUET_TABLE_FILENAME}.${PARQUET_TABLE_EXTENSION}
 
 # The Hive CREATE TABLE templates
 HIVE_SEP=""
