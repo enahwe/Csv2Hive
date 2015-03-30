@@ -97,7 +97,7 @@ optional arguments:
 
 This example generates a 'CREATE TABLE' statement file in order to create a Hive table named 'airports' :
 ```
-$ csv2hive --create airports.csv
+$ csv2hive --create ../data/airports.csv
 ```
 Let's open the new generated Hive statement file named 'airports.hql', and note that the delimiter, the number of columns and the type for each column have been discovered automatically :
 ```
@@ -130,40 +130,40 @@ If you don't want to create the table on Hive or if Hive is not installed on the
 You can specify a delimiter but it's optional. Indeed, Csv2Hive already detects the following delimiters : Comma (","), Tab ("\t"), Semicolon (";"), Pipe ("|") and Space (" ").
 The example bellow specifies explicitly a tab delimiter, by using the TSV (Tab-Separated Values) file 'airports.tsv' :
 ```
-$ csv2hive --create -d "\t" airports.tsv
+$ csv2hive --create -d "\t" ../data/airports.tsv
 ```
 
 ### Example 3 (specifying the names for database and table)
 You can specify the name of Hive database, and the Hive table's name as follows :
 ```
-$ csv2hive --create --db-name "myDatabase" --table-name "myAirportTable" airports.csv
+$ csv2hive --create --db-name "myDatabase" --table-name "myAirportTable" ../data/airports.csv
 ```
 
 ### Example 4 (create a Parquet table just after the Hive table)
 You can create a Parquet table just after creating the Hive table as follows :
 ```
-$ csv2hive --create --parquet-create --parquet-db-name "myParquetDb" --parquet-table-name "myAirportTable" airports.csv
+$ csv2hive --create --parquet-create --parquet-db-name "myParquetDb" --parquet-table-name "myAirportTable" ../data/airports.csv
 ```
 Cs2Hive will generates the two 'CREATE TABLE' statement files '.hql' and '.parquet'.
 
 ### Example 5 (creating a Hive table in two steps)
 It's possible first to generate the schema in order to modify the columns names, before to create the Hive table. This could be especially useful when the CSV file hasn't header :
 ```
-$ csv2schema --no-header airports-no_header.csv
+$ csv2schema --no-header ../data/airports-no_header.csv
 $ vi airports-no_header.schema
 ```
 After modifying the columns names in the file named 'airports-no_header.schema', then you can generate the Hive 'CREATE TABLE' statement file as follows :
 ```
-$ schema2hive airports-no_header.csv
+$ schema2hive ../data/airports-no_header.csv
 ```
 Or you can create directly the Hive table as follows :
 ```
-$ schema2hive --create airports-no_header.csv
+$ schema2hive --create ../data/airports-no_header.csv
 ```
 ### Example 6 (creating a Hive table with a separated header)
 Sometimes you have to upload some big Dumps which consist in big CSV files (more than 100 GB) but without inner headers, also those files are often accompanied by a small separated file which describes the header. No problem, the only thing you will have to do before will be to create a short file containing the header in one line, by using the same delimiter as the one inside the Dump. Finally, you will just have to specify your new header file with the option '-s' as follows :
 ```
-$ csv2hive.sh --create -s airports.header --table-name airports airports-noheader.csv
+$ csv2hive.sh --create -s airports.header --table-name airports ../data/airports-noheader.csv
 ```
 Trick: To upload the CSV file to HDFS with a different name ('airports.csv' rather 'airports-noheader.csv'), it could be nicer to create a symbolic link before.
 
