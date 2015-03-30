@@ -30,19 +30,27 @@ optional arguments:
 		If not present without -d nor --delimiter, then the delimiter
 		will be discovered automatically between :
 		{\",\" \"\\\t\" \";\" \"|\" \" \"}.
+  --create	Ask to create the table in Hive.
   --db-name DB_NAME
 		Optional name of Hive database where to create the table.
   --table-name TABLE_NAME
 		Specify a name for the table to be created.
 		If omitted, the file name (minus extension) will be used.
-  --create	Ask to create the table in Hive.
+  --table-prefix TABLE_PREFIX
+		Specify a prefix for the Hive table name.
+  --table-suffix TABLE_SUFFIX
+		Specify a suffix for the Hive table name.
+  --parquet-create
+		Ask to create the Parquet table.
   --parquet-db-name PARQUET_DB_NAME
 		Optional name for database where to create the Parquet table.
   --parquet-table-name PARQUET_TABLE_NAME
 		Specify a name for the Parquet table to be created.
 		If omitted, the file name (minus extension) will be used.
-  --parquet-create
-		Ask to create the Parquet table.
+  --parquet-table-prefix PARQUET_TABLE_PREFIX
+		Specify a prefix for the Parquet table name.
+  --parquet-table-suffix PARQUET_TABLE_SUFFIX
+		Specify a suffix for the Parquet table name.
 "
 
 # -- ARGS ----------------------------------------------------------------------
@@ -91,6 +99,12 @@ do
 		continue
 	fi
 
+        # HIVE_CREATE
+        if [ "$param" = "--create" ]; then
+                HIVE_CREATE="1"
+                continue
+        fi
+
         # HIVE_DB_NAME
         if [ "$param" = "--db-name" ]; then
                 option="OPTION_HIVE_DB_NAME"
@@ -113,9 +127,31 @@ do
                 continue
         fi
 
-        # HIVE_CREATE
-        if [ "$param" = "--create" ]; then
-                HIVE_CREATE="1"
+	# HIVE_TABLE_PREFIX
+        if [ "$param" = "--table-prefix" ]; then
+                option="OPTION_HIVE_TABLE_PREFIX"
+                continue
+        fi
+        if [ "$option" = "OPTION_HIVE_TABLE_PREFIX" ]; then
+                option=""
+                HIVE_TABLE_PREFIX=$param
+                continue
+        fi
+
+	# HIVE_TABLE_SUFFIX
+        if [ "$param" = "--table-suffix" ]; then
+                option="OPTION_HIVE_TABLE_SUFFIX"
+                continue
+        fi
+        if [ "$option" = "OPTION_HIVE_TABLE_SUFFIX" ]; then
+                option=""
+                HIVE_TABLE_SUFFIX=$param
+                continue
+        fi
+
+	# PARQUET_CREATE
+        if [ "$param" = "--parquet-create" ]; then
+                PARQUET_CREATE="1"
                 continue
         fi
 
@@ -141,15 +177,31 @@ do
                 continue
         fi
 
-	# PARENT_CALL
-        if [ "$param" = "--parent-call" ]; then
-                PARENT_CALL="1"
+	# PARQUET_TABLE_PREFIX
+        if [ "$param" = "--parquet-table-prefix" ]; then
+                option="OPTION_PARQUET_TABLE_PREFIX"
+                continue
+        fi
+        if [ "$option" = "OPTION_PARQUET_TABLE_PREFIX" ]; then
+                option=""
+                PARQUET_TABLE_PREFIX=$param
                 continue
         fi
 
-	# PARQUET_CREATE
-        if [ "$param" = "--parquet-create" ]; then
-                PARQUET_CREATE="1"
+	# PARQUET_TABLE_SUFFIX
+        if [ "$param" = "--parquet-table-suffix" ]; then
+                option="OPTION_PARQUET_TABLE_SUFFIX"
+                continue
+        fi
+        if [ "$option" = "OPTION_PARQUET_TABLE_SUFFIX" ]; then
+                option=""
+                PARQUET_TABLE_SUFFIX=$param
+                continue
+        fi
+
+	# PARENT_CALL
+        if [ "$param" = "--parent-call" ]; then
+                PARENT_CALL="1"
                 continue
         fi
 
@@ -202,9 +254,17 @@ if [ ! -f ${CSV_FILE} ]; then
         exit 1
 fi
 
-# If the work directory argument is missing, then takes the CSV file directory
+# If the work directory argument is missing, then takes the current directory
 if [ "${WORK_DIR}" = "" ]; then
 	WORK_DIR=${CURRENT_DIR}
+fi
+# If the work directory is the same as the CSV directory, then creates a sub-directory
+# that will become the new work directory
+if [ "${WORK_DIR}" = "${CSV_DIR}" ]; then
+	if [ ! -d "${WORK_DIR}/${CSV_FILENAME}" ]; then
+                mkdir "${WORK_DIR}/${CSV_FILENAME}"
+        fi
+        WORK_DIR=${WORK_DIR}/${CSV_FILENAME}
 fi
 
 # The CSV head file
@@ -223,14 +283,33 @@ if [ "${CSV_DELIMITER}" = "" ]; then
         fi
 fi
 
-# The Hive table name: If missing we use the CSV file name minus extension
+# If the Hive table name is missing, then we use the CSV file name minus extension
 if [ "${HIVE_TABLE_NAME}" = "" ]; then
         HIVE_TABLE_NAME="${CSV_FILENAME}"
 fi
+# If the Hive table prefix or suffix exist, then we surround the Hive table name with them
+if [ ! "${HIVE_TABLE_PREFIX}" = "" ]; then
+        HIVE_TABLE_NAME="${HIVE_TABLE_PREFIX}${HIVE_TABLE_NAME}"
+fi
+if [ ! "${HIVE_TABLE_SUFFIX}" = "" ]; then
+        HIVE_TABLE_NAME="${HIVE_TABLE_NAME}${HIVE_TABLE_SUFFIX}"
+fi
 
-# The Parquet table name: If missing we use the CSV file name minus extension
-if [ ! "${PARQUET_DB_NAME}" = "" ] && [ "${PARQUET_TABLE_NAME}" = "" ]; then
-        PARQUET_TABLE_NAME="${CSV_FILENAME}"
+# If the Parquet table name is missing but the Parquet database or the prefix or
+# the suffix are specified, then we use the CSV file name minus extension
+if [ "${PARQUET_TABLE_NAME}" = "" ]; then
+	if [ ! "${PARQUET_DB_NAME}" = "" ] || [ ! "${PARQUET_TABLE_PREFIX}" = "" ] || [ ! "${PARQUET_TABLE_SUFFIX}" = "" ]; then
+        	PARQUET_TABLE_NAME="${CSV_FILENAME}"
+	fi
+fi
+# If the Parquet table name exists and also the prefix or suffix, then we surround the Parquet table name with them
+if [ ! "${PARQUET_TABLE_NAME}" = "" ]; then
+	if [ ! "${PARQUET_TABLE_PREFIX}" = "" ]; then
+        	PARQUET_TABLE_NAME="${PARQUET_TABLE_PREFIX}${PARQUET_TABLE_NAME}"
+	fi
+	if [ ! "${PARQUET_TABLE_SUFFIX}" = "" ]; then
+        	PARQUET_TABLE_NAME="${PARQUET_TABLE_NAME}${PARQUET_TABLE_SUFFIX}"
+	fi
 fi
 
 # The schema file
@@ -278,17 +357,17 @@ ROW FORMAT SERDE 'parquet.hive.serde.ParquetHiveSerDe'
     INPUTFORMAT \"parquet.hive.DeprecatedParquetInputFormat\"
     OUTPUTFORMAT \"parquet.hive.DeprecatedParquetOutputFormat\";
 set parquet.compression=\"snappy\";
-INSERT OVERWRITE TABLE ${PARQUET_DB_NAME}${PARQUET_SEP}${PARQUET_TABLE_NAME} SELECT * FROM ${HIVE_DB_NAME}${DB_TABLE_SEP}${HIVE_TABLE_NAME};"
+INSERT OVERWRITE TABLE ${PARQUET_DB_NAME}${PARQUET_SEP}${PARQUET_TABLE_NAME} SELECT * FROM ${HIVE_DB_NAME}${HIVE_SEP}${HIVE_TABLE_NAME};"
 
 # -- PROG ----------------------------------------------------------------------
 
-# Generate the Hive CREATE TABLE file
+# Generates the Hive CREATE TABLE file
 rm -rf "${HIVE_TABLE_FILE}"
 touch "${HIVE_TABLE_FILE}"
 echo -e "${HIVE_TEMPLATE}" > "${HIVE_TABLE_FILE}"
 
-# Generate the Parquet table if asked
-if [ ! "${PARQUET_DB_NAME}" = "" ]; then
+# Generates the Parquet CREATE TABLE file if the Parquet table name exists
+if [ ! "${PARQUET_TABLE_NAME}" = "" ]; then
 	rm -rf "${PARQUET_TABLE_FILE}"
 	touch "${PARQUET_TABLE_FILE}"
 	echo -e "${PARQUET_TEMPLATE}" > "${PARQUET_TABLE_FILE}"

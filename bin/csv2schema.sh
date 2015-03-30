@@ -26,12 +26,12 @@ optional arguments:
 		If not present without -d nor --delimiter, then the delimiter
 		will be discovered automatically between :
 		{\",\" \"\\\t\" \";\" \"|\" \" \"}.
+  --no-header	If present, indicates that the CSV file hasn't header.
+		Then the columns will be named 'column1', 'column2', and so on.
   -s SEPARATED_HEADER, --separated-header SEPARATED_HEADER
 		Specify a separated header file that contains the header,
 		its delimiter must be the same as the delimiter in the CSV file.
 		Overrides --no-header.
-  --no-header	If present, indicates that the CSV file hasn't header.
-		Then the columns will be named 'column1', 'column2', and so on.
 "
 
 # -- ARGS ----------------------------------------------------------------------
@@ -110,6 +110,9 @@ do
         fi
 
 	# OPTIONS TO SKIP
+        if [ "$param" = "--create" ]; then
+                continue
+        fi
 	if [ "$param" = "--db-name" ]; then
                 option="OPTION_HIVE_DB_NAME"
                 continue
@@ -126,7 +129,23 @@ do
                 option=""
                 continue
         fi
-        if [ "$param" = "--create" ]; then
+	if [ "$param" = "--table-prefix" ]; then
+                option="OPTION_HIVE_TABLE_PREFIX"
+                continue
+        fi
+        if [ "$option" = "OPTION_HIVE_TABLE_PREFIX" ]; then
+                option=""
+                continue
+        fi
+	if [ "$param" = "--table-suffix" ]; then
+                option="OPTION_HIVE_TABLE_SUFFIX"
+                continue
+        fi
+        if [ "$option" = "OPTION_HIVE_TABLE_SUFFIX" ]; then
+                option=""
+                continue
+        fi
+	if [ "$param" = "--parquet-create" ]; then
                 continue
         fi
 	if [ "$param" = "--parquet-db-name" ]; then
@@ -145,15 +164,30 @@ do
                 option=""
                 continue
         fi
-	if [ "$param" = "--parquet-create" ]; then
+	if [ "$param" = "--parquet-table-prefix" ]; then
+                option="OPTION_PARQUET_TABLE_PREFIX"
+                continue
+        fi
+        if [ "$option" = "OPTION_PARQUET_TABLE_PREFIX" ]; then
+                option=""
+                continue
+        fi
+	if [ "$param" = "--parquet-table-suffix" ]; then
+                option="OPTION_PARQUET_TABLE_SUFFIX"
+                continue
+        fi
+        if [ "$option" = "OPTION_PARQUET_TABLE_SUFFIX" ]; then
+                option=""
                 continue
         fi
 
 	# CSV_FILE
 	if [ "${CSV_FILE}" = "" ]; then
 		CSV_FILE=$param
+		CSV_DIR=`(cd \`dirname ${CSV_FILE}\`; pwd)`
                 CSV_BASENAME=$(basename ${CSV_FILE})
                 CSV_FILENAME=${CSV_BASENAME%.*}
+		#CSV_EXTENSION="${CSV_BASENAME##*.}"
 		continue
 	fi
 
@@ -183,9 +217,17 @@ if [ ! -f ${CSV_FILE} ]; then
         exit 1
 fi
 
-# If the work directory argument is missing, then takes the CSV file directory
+# If the work directory argument is missing, then takes the current directory
 if [ "${WORK_DIR}" = "" ]; then
 	WORK_DIR=${CURRENT_DIR}
+fi
+# If the work directory is the same as the CSV directory, then creates a sub-directory
+# that will become the new work directory
+if [ "${WORK_DIR}" = "${CSV_DIR}" ]; then
+	if [ ! -d "${WORK_DIR}/${CSV_FILENAME}" ]; then
+		mkdir "${WORK_DIR}/${CSV_FILENAME}"
+	fi
+        WORK_DIR=${WORK_DIR}/${CSV_FILENAME}
 fi
 
 # The CSV short file
