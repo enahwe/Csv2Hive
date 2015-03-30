@@ -162,7 +162,7 @@ $ schema2hive --create ../data/airports-no_header.csv
 ### Example 6 (creating a Hive table with a separated header)
 Sometimes you have to upload some big Dumps which consist in big CSV files (more than 100 GB) but without inner headers, also those files are often accompanied by a small separated file which describes the header. No problem, the only thing you will have to do before will be to create a short file containing the header in one line, by using the same delimiter as the one inside the Dump. Finally, you will just have to specify your new header file with the option '-s' as follows :
 ```
-$ csv2hive.sh --create -s airports.header --table-name airports ../data/airports-noheader.csv
+$ csv2hive.sh --create -s ../data/airports.header --table-name airports ../data/airports-noheader.csv
 ```
 Trick: To upload the CSV file to HDFS with a different name ('airports.csv' rather 'airports-noheader.csv'), it could be nicer to create a symbolic link before.
 
