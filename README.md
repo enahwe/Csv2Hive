@@ -57,31 +57,39 @@ optional arguments:
                 Specify the delimiter used in the CSV file.
                 If not present without -t nor --tab, then the delimiter will
                 be discovered automatically between :
-                {"," "\t" ";" "|" " "}.
+                {\",\" \"\\\t\" \";\" \"|\" \" \"}.
   -t, --tab     Indicates that the tab delimiter is used in the CSV file.
                 Overrides -d and --delimiter.
                 If not present without -d nor --delimiter, then the delimiter
                 will be discovered automatically between :
-                {"," "\t" ";" "|" " "}.
+                {\",\" \"\\\t\" \";\" \"|\" \" \"}.
+  --no-header   If present, indicates that the CSV file hasn't header.
+                Then the columns will be named 'column1', 'column2', and so on.
   -s SEPARATED_HEADER, --separated-header SEPARATED_HEADER
                 Specify a separated header file that contains the header,
                 its delimiter must be the same as the delimiter in the CSV file.
                 Overrides --no-header.
-  --no-header   If present, indicates that the CSV file hasn't header.
-                Then the columns will be named 'column1', 'column2', and so on.
+  --create      Ask to create the table in Hive.
   --db-name DB_NAME
                 Optional name for database where to create the Hive table.
   --table-name TABLE_NAME
                 Specify a name for the Hive table to be created.
                 If omitted, the file name (minus extension) will be used.
-  --create      Ask to create the table in Hive.
+  --table-prefix TABLE_PREFIX
+                Specify a prefix for the Hive table name.
+  --table-suffix TABLE_SUFFIX
+                Specify a suffix for the Hive table name.
+  --parquet-create
+                Ask to create the Parquet table.
   --parquet-db-name PARQUET_DB_NAME
                 Optional name for database where to create the Parquet table.
   --parquet-table-name PARQUET_TABLE_NAME
                 Specify a name for the Parquet table to be created.
                 If omitted, the file name (minus extension) will be used.
-  --parquet-create
-                Ask to create the Parquet table.
+  --parquet-table-prefix PARQUET_TABLE_PREFIX
+                Specify a prefix for the Parquet table name.
+  --parquet-table-suffix PARQUET_TABLE_SUFFIX
+                Specify a suffix for the Parquet table name.
 ```
 
 ## Examples
