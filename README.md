@@ -21,8 +21,7 @@ The philosophy of Csv2Hive is that the data, together with its schema, is fully 
 Example with direct executing :
 ```
 $ unzip Csv2Hive-master.zip -d ~ ; mv ~/Csv2Hive-master ~/Csv2Hive
-$ cd ~/Csv2Hive
-$ ./bin/csv2hive.sh ~/myCsvFile.csv
+$ ~/Csv2Hive/bin/csv2hive.sh myCsvFile.csv
 ```
 Example with configuring your PATH :
 ```
