@@ -39,7 +39,7 @@ optional arguments:
 		Optional name for database where to create the Hive table.
   --table-name TABLE_NAME
 		Specify a name for the Hive table to be created.
-		If omitted, the file name (minus extension) will be used.
+		If omitted, the CSV file name (minus extension) will be used.
   --table-prefix TABLE_PREFIX
 		Specify a prefix for the Hive table name.
   --table-suffix TABLE_SUFFIX
@@ -50,11 +50,18 @@ optional arguments:
 		Optional name for database where to create the Parquet table.
   --parquet-table-name PARQUET_TABLE_NAME
 		Specify a name for the Parquet table to be created.
-		If omitted, the file name (minus extension) will be used.
+		If omitted, the CSV file name (minus extension) will be used.
   --parquet-table-prefix PARQUET_TABLE_PREFIX
 		Specify a prefix for the Parquet table name.
   --parquet-table-suffix PARQUET_TABLE_SUFFIX
 		Specify a suffix for the Parquet table name.
+  --hdfs-file-name HDFS_FILE_NAME
+		Specify a name for the HDFS file to be uploaded.
+		If omitted, the CSV file name (minus extension) will be used.
+  --hdfs-file-prefix HDFS_FILE_PREFIX
+		Specify a prefix for the HDFS file name.
+  --hdfs-file-suffix HDFS_FILE_SUFFIX
+		Specify a suffix for the HDFS file name.
 "
 
 # -- ARGS ----------------------------------------------------------------------

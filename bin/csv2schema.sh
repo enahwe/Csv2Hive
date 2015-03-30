@@ -180,6 +180,30 @@ do
                 option=""
                 continue
         fi
+        if [ "$param" = "--hdfs-file-name" ]; then
+                option="OPTION_HDFS_FILE_NAME"
+                continue
+        fi
+        if [ "$option" = "OPTION_HDFS_FILE_NAME" ]; then
+                option=""
+                continue
+        fi
+	if [ "$param" = "--hdfs-file-prefix" ]; then
+                option="OPTION_HDFS_FILE_PREFIX"
+                continue
+        fi
+        if [ "$option" = "OPTION_HDFS_FILE_PREFIX" ]; then
+                option=""
+                continue
+        fi
+	if [ "$param" = "--hdfs-file-suffix" ]; then
+                option="OPTION_HDFS_FILE_SUFFIX"
+                continue
+        fi
+        if [ "$option" = "OPTION_HDFS_FILE_SUFFIX" ]; then
+                option=""
+                continue
+        fi
 
 	# CSV_FILE
 	if [ "${CSV_FILE}" = "" ]; then

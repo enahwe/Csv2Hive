@@ -35,7 +35,7 @@ optional arguments:
 		Optional name of Hive database where to create the table.
   --table-name TABLE_NAME
 		Specify a name for the table to be created.
-		If omitted, the file name (minus extension) will be used.
+		If omitted, the CSV file name (minus extension) will be used.
   --table-prefix TABLE_PREFIX
 		Specify a prefix for the Hive table name.
   --table-suffix TABLE_SUFFIX
@@ -46,11 +46,18 @@ optional arguments:
 		Optional name for database where to create the Parquet table.
   --parquet-table-name PARQUET_TABLE_NAME
 		Specify a name for the Parquet table to be created.
-		If omitted, the file name (minus extension) will be used.
+		If omitted, the CSV file name (minus extension) will be used.
   --parquet-table-prefix PARQUET_TABLE_PREFIX
 		Specify a prefix for the Parquet table name.
   --parquet-table-suffix PARQUET_TABLE_SUFFIX
 		Specify a suffix for the Parquet table name.
+  --hdfs-file-name HDFS_FILE_NAME
+		Specify a name for the HDFS file to be uploaded.
+		If omitted, the CSV file name (minus extension) will be used.
+  --hdfs-file-prefix HDFS_FILE_PREFIX
+		Specify a prefix for the HDFS file name.
+  --hdfs-file-suffix HDFS_FILE_SUFFIX
+		Specify a suffix for the HDFS file name.
 "
 
 # -- ARGS ----------------------------------------------------------------------
@@ -199,6 +206,39 @@ do
                 continue
         fi
 
+        # HDFS_FILENAME
+        if [ "$param" = "--hdfs-file-name" ]; then
+                option="OPTION_HDFS_FILENAME"
+                continue
+        fi
+        if [ "$option" = "OPTION_HDFS_FILENAME" ]; then
+                option=""
+                HDFS_FILENAME=$param
+                continue
+        fi
+
+	# HDFS_FILE_PREFIX
+        if [ "$param" = "--hdfs-file-prefix" ]; then
+                option="OPTION_HDFS_FILE_PREFIX"
+                continue
+        fi
+        if [ "$option" = "OPTION_HDFS_FILE_PREFIX" ]; then
+                option=""
+                HDFS_FILE_PREFIX=$param
+                continue
+        fi
+
+	# HDFS_FILE_SUFFIX
+        if [ "$param" = "--hdfs-file-suffix" ]; then
+                option="OPTION_HDFS_FILE_SUFFIX"
+                continue
+        fi
+        if [ "$option" = "OPTION_HDFS_FILE_SUFFIX" ]; then
+                option=""
+                HDFS_FILE_SUFFIX=$param
+                continue
+        fi
+
 	# PARENT_CALL
         if [ "$param" = "--parent-call" ]; then
                 PARENT_CALL="1"
@@ -224,7 +264,9 @@ do
 		CSV_DIR=`(cd \`dirname ${CSV_FILE}\`; pwd)`
                 CSV_BASENAME=$(basename ${CSV_FILE})
                 CSV_FILENAME=${CSV_BASENAME%.*}
-		#CSV_EXTENSION="${CSV_BASENAME##*.}"
+		if [ -z "${CSV_BASENAME##*.*}" ] ;then
+			CSV_EXTENSION="${CSV_BASENAME##*.}"
+		fi
 		continue
 	fi
 
@@ -312,6 +354,31 @@ if [ ! "${PARQUET_TABLE_NAME}" = "" ]; then
 	fi
 fi
 
+# If the HDFS file name is missing, then we use the CSV file name
+if [ "${HDFS_FILENAME}" = "" ]; then
+        HDFS_FILENAME="${CSV_BASENAME}"
+fi
+HDFS_BASENAME=${HDFS_FILENAME}
+HDFS_FILENAME=${HDFS_BASENAME%.*}
+if [ -z "${HDFS_BASENAME##*.*}" ] ;then
+	HDFS_EXTENSION="${HDFS_BASENAME##*.}"
+fi
+if [ "${HDFS_EXTENSION}" = "" ] && [ ! "${CSV_EXTENSION}" = "" ]; then
+	HDFS_EXTENSION=${CSV_EXTENSION}
+fi
+# If the HDFS file prefix or suffix exist, then we surround the HDFS file name with them
+if [ ! "${HDFS_FILE_PREFIX}" = "" ]; then
+        HDFS_FILENAME="${HDFS_FILE_PREFIX}${HDFS_FILENAME}"
+fi
+if [ ! "${HDFS_FILE_SUFFIX}" = "" ]; then
+        HDFS_FILENAME="${HDFS_FILENAME}${HDFS_FILE_SUFFIX}"
+fi
+# We update the HDFS file base name (e.g: filename + extension)
+HDFS_BASENAME=${HDFS_FILENAME}
+if [ ! "${HDFS_EXTENSION}" = "" ]; then
+        HDFS_BASENAME="${HDFS_FILENAME}.${HDFS_EXTENSION}"
+fi
+
 # The schema file
 SCHEMA_FILE=${WORK_DIR}/${CSV_FILENAME}.schema
 
@@ -340,7 +407,7 @@ COMMENT \"The table [${HIVE_DB_NAME}${HIVE_SEP}${HIVE_TABLE_NAME}]\"
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY '\\${HIVE_TABLE_DELIMITER}';
 LOAD DATA LOCAL
-INPATH '${CSV_DIR}/${CSV_BASENAME}' OVERWRITE INTO TABLE ${HIVE_DB_NAME}${HIVE_SEP}${HIVE_TABLE_NAME};"
+INPATH '${WORK_DIR}/${HDFS_BASENAME}' OVERWRITE INTO TABLE ${HIVE_DB_NAME}${HIVE_SEP}${HIVE_TABLE_NAME};"
 
 # The Parquet CREATE TABLE template
 PARQUET_SEP=""
@@ -361,14 +428,18 @@ INSERT OVERWRITE TABLE ${PARQUET_DB_NAME}${PARQUET_SEP}${PARQUET_TABLE_NAME} SEL
 
 # -- PROG ----------------------------------------------------------------------
 
+# Creates the link to the CSV file
+rm -f "${WORK_DIR}/${HDFS_BASENAME}"
+ln -s "${CSV_DIR}/${CSV_BASENAME}" "${WORK_DIR}/${HDFS_BASENAME}"
+
 # Generates the Hive CREATE TABLE file
-rm -rf "${HIVE_TABLE_FILE}"
+rm -f "${HIVE_TABLE_FILE}"
 touch "${HIVE_TABLE_FILE}"
 echo -e "${HIVE_TEMPLATE}" > "${HIVE_TABLE_FILE}"
 
 # Generates the Parquet CREATE TABLE file if the Parquet table name exists
 if [ ! "${PARQUET_TABLE_NAME}" = "" ]; then
-	rm -rf "${PARQUET_TABLE_FILE}"
+	rm -f "${PARQUET_TABLE_FILE}"
 	touch "${PARQUET_TABLE_FILE}"
 	echo -e "${PARQUET_TEMPLATE}" > "${PARQUET_TABLE_FILE}"
 fi
