@@ -6,7 +6,7 @@ import sys
 # $ python searchDelimiter.py "xx;xxx,xx;xxxx;xxx,xx" "yyyy,yyyy;yy;yy,yy"
 
 # --------------------------------------------------------------------------------
-# Searchs in the two strings the delimiter with the highest and the same frequency
+# Searchs into the 2 strings the delimiter with the highest and the same frequency
 # --------------------------------------------------------------------------------
 def searchDelimiterWithHighestAndSameFrequency(string1, string2):
 	delimiter = "NO_DELIMITER"
@@ -22,9 +22,9 @@ def searchDelimiterWithHighestAndSameFrequency(string1, string2):
 # --------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------
-# Transforms the content of substrings surrounded by quotes 
+# Transforms the content of substrings if surrounded by a quote character 
 # --------------------------------------------------------------------------------
-def transformSubstringsSurroundedByQuotes(aString, aChar):
+def transformSubstringsSurroundedByQuoteChar(aString, aChar):
 	outputString = ""
 	joker = "Z"
 	writeJoker = False
@@ -45,12 +45,11 @@ def transformSubstringsSurroundedByQuotes(aString, aChar):
 
 string1 = sys.argv[1]
 string2 = sys.argv[2]
+quotechar = sys.argv[3]
 
-string1 = transformSubstringsSurroundedByQuotes(string1, "\"")
-string2 = transformSubstringsSurroundedByQuotes(string2, "\"")
-
-string1 = transformSubstringsSurroundedByQuotes(string1, "'")
-string2 = transformSubstringsSurroundedByQuotes(string2, "'")
+if quotechar:
+	string1 = transformSubstringsSurroundedByQuoteChar(string1, quotechar)
+	string2 = transformSubstringsSurroundedByQuoteChar(string2, quotechar)
 
 delimiter = searchDelimiterWithHighestAndSameFrequency(string1, string2)
 if delimiter == "\t":

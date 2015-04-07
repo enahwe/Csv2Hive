@@ -30,6 +30,7 @@ optional arguments:
 		If not present without -d nor --delimiter, then the delimiter
 		will be discovered automatically between :
 		{\",\" \"\\\t\" \";\" \"|\" \" \"}.
+  -q QUOTECHAR  The quote character surrounding the fields.
   --create	Ask to create the table in Hive.
   --db-name DB_NAME
 		Optional name of Hive database where to create the table.
@@ -105,6 +106,17 @@ do
 		CSV_DELIMITER="\t"
 		continue
 	fi
+
+	# QUOTE_CHAR
+        if [ "$param" = "-q" ]; then
+                option="OPTION_QUOTE_CHAR"
+                continue
+        fi
+        if [ "$option" = "OPTION_QUOTE_CHAR" ]; then
+                option=""
+                QUOTE_CHAR=$param
+                continue
+        fi
 
         # HIVE_CREATE
         if [ "$param" = "--create" ]; then
@@ -309,18 +321,18 @@ if [ "${WORK_DIR}" = "${CSV_DIR}" ]; then
         WORK_DIR=${WORK_DIR}/${CSV_FILENAME}
 fi
 
-# The CSV head file
-CSV_HEAD_FILE=${WORK_DIR}/${CSV_FILENAME}.head
-
 # Search the delimiter if not specified
 if [ "${CSV_DELIMITER}" = "" ]; then
-        head -2 "${CSV_FILE}" > "${CSV_HEAD_FILE}"
-        STRING_1=`head -1 "${CSV_HEAD_FILE}"`
-        STRING_2=`tail -1 "${CSV_HEAD_FILE}"`
-        rm -rf "${CSV_HEAD_FILE}"
-        CSV_DELIMITER=`python "${SCRIPT_DIR}/searchDelimiter.py" "${STRING_1}" "${STRING_2}"`
+	TWO_FIRST_LINES_FILE=${WORK_DIR}/${CSV_FILENAME}.2FirstLines
+        head -2 "${CSV_FILE}" > "${TWO_FIRST_LINES_FILE}"
+        STRING_1=`head -1 "${TWO_FIRST_LINES_FILE}"`
+        STRING_2=`tail -n +2 "${TWO_FIRST_LINES_FILE}"`
+        rm -rf "${TWO_FIRST_LINES_FILE}"
+        CSV_DELIMITER=`python "${SCRIPT_DIR}/searchDelimiter.py" "${STRING_1}" "${STRING_2}" "${QUOTE_CHAR}"`
         if [ "${CSV_DELIMITER}" = "NO_DELIMITER" ]; then
                 echo "- Error: Delimiter not found !"
+		echo "         Maybe the number of delimiters are differents in the two first lines !"
+                echo "         Or maybe you should check the quote character (-q option) !"
                 exit 1
         fi
 fi

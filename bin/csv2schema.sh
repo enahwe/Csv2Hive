@@ -32,6 +32,7 @@ optional arguments:
 		Specify a separated header file that contains the header,
 		its delimiter must be the same as the delimiter in the CSV file.
 		Overrides --no-header.
+  -q QUOTECHAR  The quote character surrounding the fields.
 "
 
 # -- ARGS ----------------------------------------------------------------------
@@ -100,6 +101,17 @@ do
 	# CSV_NO_HEADER
         if [ "$param" = "--no-header" ]; then
                 CSV_NO_HEADER="1"
+                continue
+        fi
+
+	# QUOTE_CHAR
+        if [ "$param" = "-q" ]; then
+                option="OPTION_QUOTE_CHAR"
+                continue
+        fi
+        if [ "$option" = "OPTION_QUOTE_CHAR" ]; then
+                option=""
+                QUOTE_CHAR=$param
                 continue
         fi
 
@@ -319,14 +331,20 @@ fi
 # Search the delimiter if not defined
 if [ "${CSV_DELIMITER}" = "" ]; then
         TWO_FIRST_LINES_FILE=${WORK_DIR}/${CSV_FILENAME}.2FirstLines
-        head -2 "${CSV_SHORT_FILE}" > "${TWO_FIRST_LINES_FILE}"
+	if [ ! "${SEPARATED_HEADER_FILE}" = "" ]; then
+		cp "${SEPARATED_HEADER_FILE}" "${TWO_FIRST_LINES_FILE}"
+		head -1 "${CSV_FILE}" | cat >> "${TWO_FIRST_LINES_FILE}"
+	else
+		head -2 "${CSV_FILE}" > "${TWO_FIRST_LINES_FILE}"
+	fi
         STRING_1=`head -1 "${TWO_FIRST_LINES_FILE}"`
         STRING_2=`tail -n +2 "${TWO_FIRST_LINES_FILE}"`
         rm -rf "${TWO_FIRST_LINES_FILE}"
-        CSV_DELIMITER=`python "${SCRIPT_DIR}/searchDelimiter.py" "${STRING_1}" "${STRING_2}"`
+        CSV_DELIMITER=`python "${SCRIPT_DIR}/searchDelimiter.py" "${STRING_1}" "${STRING_2}" "${QUOTE_CHAR}"`
         if [ "${CSV_DELIMITER}" = "NO_DELIMITER" ]; then
                 echo "- Error: Delimiter not found !"
-		echo "         Or maybe the number of delimiters are differents between the two first lines !"
+		echo "         Maybe the number of delimiters are differents in the two first lines !"
+		echo "         Or maybe you should check the quote character (-q option) !"
                 exit 1
         fi
 fi
