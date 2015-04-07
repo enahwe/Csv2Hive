@@ -276,6 +276,7 @@ G\$a,\e
 :%s/([0-9]*)//g
 :%s/ VARCHAR,/-string,/g
 :%s/ STRING,/-string,/g
+:%s/ DATETIME,/-string,/g
 :%s/ DATE,/-string,/g
 :%s/ TIMESTAMP,/-string,/g
 :%s/ INTEGER,/-int,/g
