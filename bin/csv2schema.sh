@@ -298,6 +298,7 @@ G\$a,\e
 :%s/-float,/ float,/g
 :%s/-boolean,/ boolean,/g
 :%s/-binary,/ binary,/g
+:%s/^_/x_/g
 G\$x
 :wq
 "
