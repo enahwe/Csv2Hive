@@ -31,7 +31,8 @@ optional arguments:
 		will be discovered automatically between :
 		{\",\" \"\\\t\" \";\" \"|\" \" \"}.
   -q QUOTECHAR  The quote character surrounding the fields.
-  --create	Ask to create the table in Hive.
+  --create	Creates the table in Hive.
+                Overrides the previous Hive table, as well as its file in HDFS.
   --db-name DB_NAME
 		Optional name of Hive database where to create the table.
   --table-name TABLE_NAME

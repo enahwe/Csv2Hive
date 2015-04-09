@@ -35,7 +35,8 @@ optional arguments:
                 its delimiter must be the same as the delimiter in the CSV file.
                 Overrides --no-header.
   -q QUOTECHAR	The quote character surrounding the fields.
-  --create	Ask to create the table in Hive.
+  --create	Creates the table in Hive.
+		Overrides the previous Hive table, as well as its file in HDFS.
   --db-name DB_NAME
 		Optional name for database where to create the Hive table.
   --table-name TABLE_NAME
