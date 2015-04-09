@@ -74,6 +74,10 @@ do
 	if [ "$option" = "OPTION_CSV_DELIMITER" ]; then
 		option=""
 		CSV_DELIMITER=$param
+		if [ "${CSV_DELIMITER}" = "" ]; then
+			echo "- Error: The delimiter is missing !"
+			exit 1
+		fi
 		continue
 	fi
 	if [ "$param" = "-t" ] || [ "$param" = "--tab" ]; then
@@ -95,6 +99,10 @@ do
         if [ "$option" = "OPTION_SEPARATED_HEADER" ]; then
                 option=""
                 SEPARATED_HEADER_FILE=$param
+		if [ "${SEPARATED_HEADER_FILE}" = "" ]; then
+                        echo "- Error: The header file is missing !"
+                        exit 1
+                fi
                 continue
         fi
 
@@ -112,6 +120,10 @@ do
         if [ "$option" = "OPTION_QUOTE_CHAR" ]; then
                 option=""
                 QUOTE_CHAR=$param
+		if [ "${QUOTE_CHAR}" = "" ]; then
+                        echo "- Error: The quote character is missing !"
+                        exit 1
+                fi
                 continue
         fi
 

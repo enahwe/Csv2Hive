@@ -100,6 +100,10 @@ do
 	if [ "$option" = "OPTION_CSV_DELIMITER" ]; then
 		option=""
 		CSV_DELIMITER=$param
+		if [ "${CSV_DELIMITER}" = "" ]; then
+                        echo "- Error: The delimiter is missing !"
+                        exit 1
+                fi
 		continue
 	fi
 	if [ "$param" = "-t" ] || [ "$param" = "--tab" ]; then
@@ -115,6 +119,10 @@ do
         if [ "$option" = "OPTION_QUOTE_CHAR" ]; then
                 option=""
                 QUOTE_CHAR=$param
+		if [ "${QUOTE_CHAR}" = "" ]; then
+                        echo "- Error: The quote character is missing !"
+                        exit 1
+                fi
                 continue
         fi
 
@@ -132,6 +140,10 @@ do
         if [ "$option" = "OPTION_HIVE_DB_NAME" ]; then
                 option=""
                 HIVE_DB_NAME="$param"
+		if [ "${HIVE_DB_NAME}" = "" ]; then
+                        echo "- Error: The Hive DB name is missing !"
+                        exit 1
+                fi
                 continue
         fi
 
@@ -143,6 +155,10 @@ do
         if [ "$option" = "OPTION_HIVE_TABLE_NAME" ]; then
                 option=""
                 HIVE_TABLE_NAME=$param
+		if [ "${HIVE_TABLE_NAME}" = "" ]; then
+                        echo "- Error: The Hive table name is missing !"
+                        exit 1
+                fi
                 continue
         fi
 
@@ -154,6 +170,10 @@ do
         if [ "$option" = "OPTION_HIVE_TABLE_PREFIX" ]; then
                 option=""
                 HIVE_TABLE_PREFIX=$param
+		if [ "${HIVE_TABLE_PREFIX}" = "" ]; then
+                        echo "- Error: The Hive table prefix is missing !"
+                        exit 1
+                fi
                 continue
         fi
 
@@ -165,6 +185,10 @@ do
         if [ "$option" = "OPTION_HIVE_TABLE_SUFFIX" ]; then
                 option=""
                 HIVE_TABLE_SUFFIX=$param
+		if [ "${HIVE_TABLE_SUFFIX}" = "" ]; then
+                        echo "- Error: The Hive table suffix is missing !"
+                        exit 1
+                fi
                 continue
         fi
 
@@ -182,6 +206,10 @@ do
         if [ "$option" = "OPTION_PARQUET_DB_NAME" ]; then
                 option=""
                 PARQUET_DB_NAME="$param"
+		if [ "${PARQUET_DB_NAME}" = "" ]; then
+                        echo "- Error: The Parquet DB name is missing !"
+                        exit 1
+                fi
                 continue
         fi
 
@@ -193,6 +221,10 @@ do
         if [ "$option" = "OPTION_PARQUET_TABLE_NAME" ]; then
                 option=""
                 PARQUET_TABLE_NAME=$param
+		if [ "${PARQUET_TABLE_NAME}" = "" ]; then
+                        echo "- Error: The Parquet table name is missing !"
+                        exit 1
+                fi
                 continue
         fi
 
@@ -204,6 +236,10 @@ do
         if [ "$option" = "OPTION_PARQUET_TABLE_PREFIX" ]; then
                 option=""
                 PARQUET_TABLE_PREFIX=$param
+		if [ "${PARQUET_TABLE_PREFIX}" = "" ]; then
+                        echo "- Error: The Parquet table prefix is missing !"
+                        exit 1
+                fi
                 continue
         fi
 
@@ -215,6 +251,10 @@ do
         if [ "$option" = "OPTION_PARQUET_TABLE_SUFFIX" ]; then
                 option=""
                 PARQUET_TABLE_SUFFIX=$param
+		if [ "${PARQUET_TABLE_SUFFIX}" = "" ]; then
+                        echo "- Error: The Parquet table suffix is missing !"
+                        exit 1
+                fi
                 continue
         fi
 
@@ -226,6 +266,10 @@ do
         if [ "$option" = "OPTION_HDFS_FILENAME" ]; then
                 option=""
                 HDFS_FILENAME=$param
+		if [ "${HDFS_FILENAME}" = "" ]; then
+                        echo "- Error: The HDFS file name is missing !"
+                        exit 1
+                fi
                 continue
         fi
 
@@ -237,6 +281,10 @@ do
         if [ "$option" = "OPTION_HDFS_FILE_PREFIX" ]; then
                 option=""
                 HDFS_FILE_PREFIX=$param
+		if [ "${HDFS_FILE_PREFIX}" = "" ]; then
+                        echo "- Error: The HDFS file prefix is missing !"
+                        exit 1
+                fi
                 continue
         fi
 
@@ -248,6 +296,10 @@ do
         if [ "$option" = "OPTION_HDFS_FILE_SUFFIX" ]; then
                 option=""
                 HDFS_FILE_SUFFIX=$param
+		if [ "${HDFS_FILE_SUFFIX}" = "" ]; then
+                        echo "- Error: The HDFS file suffix is missing !"
+                        exit 1
+                fi
                 continue
         fi
 
