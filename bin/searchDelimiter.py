@@ -2,8 +2,10 @@
 
 import sys
 
+# searchDelimiter v1.0
+ 
 # Usage example :
-# $ python searchDelimiter.py "xx;xxx,xx;xxxx;xxx,xx" "yyyy,yyyy;yy;yy,yy"
+# $ python searchDelimiter.py "xx;xxx,xx;xxxx;xxx,xx" "yyyy,yyyy;yy;yy,yy" ""
 
 # --------------------------------------------------------------------------------
 # Searchs into the 2 strings the delimiter with the highest and the same frequency

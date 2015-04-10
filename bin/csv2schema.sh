@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# -- VERSION -------------------------------------------------------------------
+
+VERSION="csv2schema v1.0"
+
 # -- HELP ----------------------------------------------------------------------
 
 HELP_CONTENT="
@@ -15,6 +19,7 @@ positional arguments:
 		name but with the extension '.schema'.
 
 optional arguments:
+  --version	Show the version of this program.
   -h, --help	Show this help message and exit.
   -d DELIMITER, --delimiter DELIMITER
 		Specify the delimiter used in the CSV file.
@@ -61,9 +66,15 @@ do
 		continue
 	fi
 
-	# HELP
+	# SHOW_VERSION
+        if [ "$param" = "--version" ]; then
+                SHOW_VERSION="1"
+                break
+        fi
+
+	# SHOW_HELP
 	if [ "$param" = "-h" ] || [ "$param" = "--help" ]; then
-		HELP="1"
+		SHOW_HELP="1"
 		break
 	fi
 
@@ -238,8 +249,14 @@ done
 
 # -- VARS ----------------------------------------------------------------------
 
+# Showing the version
+if [ "${SHOW_VERSION}" = "1" ]; then
+        echo -e "${VERSION}"
+        exit 0
+fi
+
 # Showing the Help content if asked
-if [ "${HELP}" = "1" ] || [ "$#" = "0" ]; then
+if [ "${SHOW_HELP}" = "1" ] || [ "$#" = "0" ]; then
 	echo -e "${HELP_CONTENT}"
 	exit 0
 fi

@@ -51,6 +51,7 @@ positional argument:
                 same as the CSV file but with the extension '.hql'.
 
 optional arguments:
+  --version     Show the version of this program.
   -h, --help    Show this help message and exit.
   -d DELIMITER, --delimiter DELIMITER
                 Specify the delimiter used in the CSV file.
