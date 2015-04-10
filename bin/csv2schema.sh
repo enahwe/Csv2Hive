@@ -20,19 +20,20 @@ optional arguments:
 		Specify the delimiter used in the CSV file.
 		If not present without -t nor --tab, then the delimiter will
 		be discovered automatically between :
-		{\",\" \"\\\t\" \";\" \"|\" \" \"}.
+		{\",\" \"\\\t\" \";\" \"|\" \"\\\b\"}.
   -t, --tab	Indicates that the tab delimiter is used in the CSV file.
 		Overrides -d and --delimiter.
 		If not present without -d nor --delimiter, then the delimiter
 		will be discovered automatically between :
-		{\",\" \"\\\t\" \";\" \"|\" \" \"}.
+		{\",\" \"\\\t\" \";\" \"|\" \"\\\b\"}.
   --no-header	If present, indicates that the CSV file hasn't header.
 		Then the columns will be named 'column1', 'column2', and so on.
   -s SEPARATED_HEADER, --separated-header SEPARATED_HEADER
 		Specify a separated header file that contains the header,
 		its delimiter must be the same as the delimiter in the CSV file.
 		Overrides --no-header.
-  -q QUOTECHAR  The quote character surrounding the fields.
+  -q QUOTE_CHARACTER, --quote-character QUOTE_CHARACTER 
+		The quote character surrounding the fields.
 "
 
 # -- ARGS ----------------------------------------------------------------------
@@ -74,10 +75,6 @@ do
 	if [ "$option" = "OPTION_CSV_DELIMITER" ]; then
 		option=""
 		CSV_DELIMITER=$param
-		if [ "${CSV_DELIMITER}" = "" ]; then
-			echo "- Error: The delimiter is missing !"
-			exit 1
-		fi
 		continue
 	fi
 	if [ "$param" = "-t" ] || [ "$param" = "--tab" ]; then
@@ -99,10 +96,6 @@ do
         if [ "$option" = "OPTION_SEPARATED_HEADER" ]; then
                 option=""
                 SEPARATED_HEADER_FILE=$param
-		if [ "${SEPARATED_HEADER_FILE}" = "" ]; then
-                        echo "- Error: The header file is missing !"
-                        exit 1
-                fi
                 continue
         fi
 
@@ -112,18 +105,14 @@ do
                 continue
         fi
 
-	# QUOTE_CHAR
-        if [ "$param" = "-q" ]; then
-                option="OPTION_QUOTE_CHAR"
+	# QUOTE_CHARACTER
+        if [ "$param" = "-q" ] || [ "$param" = "--quote-character" ]; then
+                option="OPTION_QUOTE_CHARACTER"
                 continue
         fi
-        if [ "$option" = "OPTION_QUOTE_CHAR" ]; then
+        if [ "$option" = "OPTION_QUOTE_CHARACTER" ]; then
                 option=""
-                QUOTE_CHAR=$param
-		if [ "${QUOTE_CHAR}" = "" ]; then
-                        echo "- Error: The quote character is missing !"
-                        exit 1
-                fi
+                QUOTE_CHARACTER=$param
                 continue
         fi
 
@@ -255,6 +244,20 @@ if [ "${HELP}" = "1" ] || [ "$#" = "0" ]; then
 	exit 0
 fi
 
+# Watchdogs
+if [ "${option}" = "OPTION_CSV_DELIMITER" ] && [ "${CSV_DELIMITER}" = "" ]; then
+        echo "- Error: The delimiter is missing (note: for a space delimiter, use \"\\b\" rather than \" \") !"
+        exit 1
+fi
+if [ "${option}" = "OPTION_SEPARATED_HEADER" ] && [ "${SEPARATED_HEADER_FILE}" = "" ]; then
+        echo "- Error: The header file is missing !"
+        exit 1
+fi
+if [ "${option}" = "OPTION_QUOTE_CHARACTER" ] && [ "${QUOTE_CHARACTER}" = "" ]; then
+        echo "- Error: The quote character is missing !"
+        exit 1
+fi
+
 # Check if the CSV file argument is missing or if the file doesn't exists
 if [ "${CSV_FILE}" = "" ]; then
         echo "- Error: The CSV file is missing ! Please use \"-h\" or \"--help\" for usage."
@@ -352,7 +355,7 @@ if [ "${CSV_DELIMITER}" = "" ]; then
         STRING_1=`head -1 "${TWO_FIRST_LINES_FILE}"`
         STRING_2=`tail -n +2 "${TWO_FIRST_LINES_FILE}"`
         rm -rf "${TWO_FIRST_LINES_FILE}"
-        CSV_DELIMITER=`python "${SCRIPT_DIR}/searchDelimiter.py" "${STRING_1}" "${STRING_2}" "${QUOTE_CHAR}"`
+        CSV_DELIMITER=`python "${SCRIPT_DIR}/searchDelimiter.py" "${STRING_1}" "${STRING_2}" "${QUOTE_CHARACTER}"`
         if [ "${CSV_DELIMITER}" = "NO_DELIMITER" ]; then
                 echo "- Error: Delimiter not found !"
 		echo "         Maybe the number of delimiters are differents in the two first lines !"

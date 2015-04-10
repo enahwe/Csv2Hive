@@ -22,19 +22,20 @@ optional arguments:
 		Specify the delimiter used in the CSV file.
 		If not present without -t nor --tab, then the delimiter will
 		be discovered automatically between :
-		{\",\" \"\\\t\" \";\" \"|\" \" \"}.
+		{\",\" \"\\\t\" \";\" \"|\" \"\\\b\"}.
   -t, --tab	Indicates that the tab delimiter is used in the CSV file.
 		Overrides -d and --delimiter.
 		If not present without -d nor --delimiter, then the delimiter
 		will be discovered automatically between :
-		{\",\" \"\\\t\" \";\" \"|\" \" \"}.
+		{\",\" \"\\\t\" \";\" \"|\" \"\\\b\"}.
   --no-header	If present, indicates that the CSV file hasn't header.
 		Then the columns will be named 'column1', 'column2', and so on.
   -s SEPARATED_HEADER, --separated-header SEPARATED_HEADER
-                Specify a separated header file that contains the header,
-                its delimiter must be the same as the delimiter in the CSV file.
-                Overrides --no-header.
-  -q QUOTECHAR	The quote character surrounding the fields.
+		Specify a separated header file that contains the header,
+		its delimiter must be the same as the delimiter in the CSV file.
+		Overrides --no-header.
+  -q QUOTE_CHARACTER, --quote-character QUOTE_CHARACTER 
+		The quote character surrounding the fields.
   --create	Creates the table in Hive.
 		Overrides the previous Hive table, as well as its file in HDFS.
   --db-name DB_NAME

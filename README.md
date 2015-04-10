@@ -68,7 +68,8 @@ optional arguments:
                 Specify a separated header file that contains the header,
                 its delimiter must be the same as the delimiter in the CSV file.
                 Overrides --no-header.
-  -q QUOTECHAR	The quote character surrounding the fields.
+  -q QUOTE_CHARACTER, --quote-character QUOTE_CHARACTER 
+                The quote character surrounding the fields.
   --create      Creates the table in Hive.
                 Overrides the previous Hive table, as well as its file in HDFS.
   --db-name DB_NAME
