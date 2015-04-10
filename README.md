@@ -1,4 +1,4 @@
-![](/Csv2Hive.png "Csv2Hive")
+![](/Csv2Hive-logo.png "Csv2Hive")
 
 ## "The data together with its schema, is fully self-describing"
 
