@@ -459,6 +459,9 @@ PARQUET_TABLE_FILE=${WORK_DIR}/${CSV_FILENAME}.parquet
 # The vars for building the Hive template
 HIVE_TABLE_MODEL=`sed -e 's/^/\t/' ${SCHEMA_FILE}`
 HIVE_TABLE_DELIMITER=${CSV_DELIMITER}
+if [ "${HIVE_TABLE_DELIMITER}" = "\b" ]; then
+        HIVE_TABLE_DELIMITER=" "
+fi
 HIVE_TABLE_COMMENT="The table [${HIVE_TABLE_NAME}]"
 PARQUET_TABLE_COMMENT="The parquet table [${PARQUET_TABLE_NAME}]"
 
