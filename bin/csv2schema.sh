@@ -368,6 +368,8 @@ fi
 CSVSQL_OPTS=
 if [ "${CSV_DELIMITER}" = "\t" ]; then
 	CSVSQL_OPTS="${CSVSQL_OPTS}-t"
+elif [ "${CSV_DELIMITER}" = "\b" ]; then
+	CSVSQL_OPTS="${CSVSQL_OPTS}"
 else
 	CSVSQL_OPTS="${CSVSQL_OPTS}-d ${CSV_DELIMITER}"
 fi

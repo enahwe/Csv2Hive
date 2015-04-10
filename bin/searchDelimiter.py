@@ -54,7 +54,7 @@ if quotechar:
 delimiter = searchDelimiterWithHighestAndSameFrequency(string1, string2)
 if delimiter == "\t":
 	delimiter = "\\t"
-if delimiter == "\b":
+if delimiter == " ":
         delimiter = "\\b"
 
 print delimiter
