@@ -130,7 +130,7 @@ INPATH '/home/user/Csv2Hive/test/airports.csv' OVERWRITE INTO TABLE airports;
 If you don't want to create the table on Hive or if Hive is not installed on the same machine, don't use the '--create' option (anyway Cs2Hive will generates for you a '.hql' file).
 
 ### Example 2 (specifying a delimiter)
-You can specify a delimiter but it's optional. Indeed, Csv2Hive already detects the following delimiters : Comma (","), Tab ("\t"), Semicolon (";"), Pipe ("|") and Space (" ").
+You can specify a delimiter but it's optional. Indeed, Csv2Hive already detects the following delimiters : Comma (","), Tab ("\t"), Semicolon (";"), Pipe ("|") and Space ("\b").
 The example bellow specifies explicitly a tab delimiter, by using the TSV (Tab-Separated Values) file 'airports.tsv' :
 ```
 $ csv2hive --create -d "\t" ../data/airports.tsv
