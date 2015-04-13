@@ -57,7 +57,7 @@ delimiter = searchDelimiterWithHighestAndSameFrequency(string1, string2)
 if delimiter == "\t":
 	delimiter = "\\t"
 if delimiter == " ":
-        delimiter = "\\b"
+        delimiter = "\\s"
 
 print delimiter
 

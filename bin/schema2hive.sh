@@ -23,18 +23,18 @@ positional argument:
 		same as the CSV file but with the extension '.hql'.
 
 optional arguments:
-  --version	Show the version of this program.
+  -v, --version	Show the version of this program.
   -h, --help	Show this help message and exit.
   -d DELIMITER, --delimiter DELIMITER
 		Specify the delimiter used in the CSV file.
 		If not present without -t nor --tab, then the delimiter will
 		be discovered automatically between :
-		{\",\" \"\\\t\" \";\" \"|\" \"\\\b\"}.
+		{\",\" \"\\\t\" \";\" \"|\" \"\\\s\"}.
   -t, --tab	Indicates that the tab delimiter is used in the CSV file.
 		Overrides -d and --delimiter.
 		If not present without -d nor --delimiter, then the delimiter
 		will be discovered automatically between :
-		{\",\" \"\\\t\" \";\" \"|\" \"\\\b\"}.
+		{\",\" \"\\\t\" \";\" \"|\" \"\\\s\"}.
   -q QUOTE_CHARACTER, --quote-character QUOTE_CHARACTER 
 		The quote character surrounding the fields.
   --create	Creates the table in Hive.
@@ -94,7 +94,7 @@ do
 	fi
 
 	# SHOW_VERSION
-        if [ "$param" = "--version" ]; then
+        if [ "$param" = "-v" ] || [ "$param" = "--version" ]; then
                 SHOW_VERSION="1"
                 break
         fi
@@ -319,7 +319,7 @@ fi
 
 # Watchdogs
 if [ "${option}" = "OPTION_CSV_DELIMITER" ] && [ "${CSV_DELIMITER}" = "" ]; then
-        echo "- Error: The delimiter is missing (note: for a space delimiter, use \"\\b\" rather than \" \") !"
+        echo "- Error: The delimiter is missing (note: for a space delimiter, use \"\\s\" rather than \" \") !"
         exit 1
 fi
 if [ "${option}" = "OPTION_QUOTE_CHARACTER" ] && [ "${QUOTE_CHARACTER}" = "" ]; then
@@ -476,7 +476,7 @@ PARQUET_TABLE_FILE=${WORK_DIR}/${CSV_FILENAME}.parquet
 # The vars for building the Hive template
 HIVE_TABLE_MODEL=`sed -e 's/^/\t/' ${SCHEMA_FILE}`
 HIVE_TABLE_DELIMITER=${CSV_DELIMITER}
-if [ "${HIVE_TABLE_DELIMITER}" = "\b" ]; then
+if [ "${HIVE_TABLE_DELIMITER}" = "\s" ]; then
         HIVE_TABLE_DELIMITER=" "
 fi
 HIVE_TABLE_COMMENT="The table [${HIVE_TABLE_NAME}]"

@@ -21,18 +21,18 @@ positional argument:
 		same as the CSV file but with the extension '.hql'.
 
 optional arguments:
-  --version	Show the version of this program.
+  -v, --version	Show the version of this program.
   -h, --help	Show this help message and exit.
   -d DELIMITER, --delimiter DELIMITER
 		Specify the delimiter used in the CSV file.
 		If not present without -t nor --tab, then the delimiter will
 		be discovered automatically between :
-		{\",\" \"\\\t\" \";\" \"|\" \"\\\b\"}.
+		{\",\" \"\\\t\" \";\" \"|\" \"\\\s\"}.
   -t, --tab	Indicates that the tab delimiter is used in the CSV file.
 		Overrides -d and --delimiter.
 		If not present without -d nor --delimiter, then the delimiter
 		will be discovered automatically between :
-		{\",\" \"\\\t\" \";\" \"|\" \"\\\b\"}.
+		{\",\" \"\\\t\" \";\" \"|\" \"\\\s\"}.
   --no-header	If present, indicates that the CSV file hasn't header.
 		Then the columns will be named 'column1', 'column2', and so on.
   -s SEPARATED_HEADER, --separated-header SEPARATED_HEADER
@@ -97,7 +97,7 @@ do
 	fi
 
         # SHOW_VERSION
-        if [ "$param" = "--version" ]; then
+        if [ "$param" = "-v" ] || [ "$param" = "--version" ]; then
                 SHOW_VERSION="1"
                 break
         fi
