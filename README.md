@@ -41,7 +41,7 @@ usage: csv2hive [CSV_FILE] {WORK_DIR}
 
 Generate a Hive 'CREATE TABLE' statement given a CSV file and execute that
 statement directly on Hive by uploading the CSV file to HDFS.
-The Parquet format is also supported. 
+The Parquet format is also supported.
 
 positional argument:
   CSV_FILE      The CSV file to operate on.
