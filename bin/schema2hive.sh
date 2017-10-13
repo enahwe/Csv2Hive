@@ -35,7 +35,7 @@ optional arguments:
 		If not present without -d nor --delimiter, then the delimiter
 		will be discovered automatically between :
 		{\",\" \"\\\t\" \";\" \"|\" \"\\\s\"}.
-  -q QUOTE_CHARACTER, --quote-character QUOTE_CHARACTER 
+  -q QUOTE_CHARACTER, --quote-character QUOTE_CHARACTER
 		The quote character surrounding the fields.
   --create	Creates the table in Hive.
 		Overrides the previous Hive table, as well as its file in HDFS.
@@ -70,34 +70,31 @@ optional arguments:
 
 # -- ARGS ----------------------------------------------------------------------
 
-ALL_ARGS="$0 $@"
 option=""
-counter=-1
+counter=0
 CURRENT_DIR=`pwd`
-for param in ${ALL_ARGS}
+
+# SCRIPT_FILE & SCRIPT_DIR
+SCRIPT_FILE=$0
+SCRIPT_DIR=`(cd \`dirname ${SCRIPT_FILE}\`; pwd)`
+# If the script file is a symbolic link
+if [[ -L "${SCRIPT_FILE}" ]]
+then
+  SCRIPT_FILE=`ls -la ${SCRIPT_FILE} | cut -d">" -f2`
+  SCRIPT_DIR=`(cd \`dirname ${SCRIPT_FILE}\`; pwd)`
+fi
+SCRIPT_BASENAME=$(basename ${SCRIPT_FILE})
+SCRIPT_FILENAME=${SCRIPT_BASENAME%.*}
+
+for param in "$@"
 do
 	counter=$((counter+1))
 
-	# SCRIPT_FILE & SCRIPT_DIR
-	if [ "$counter" = "0" ]; then
-		SCRIPT_FILE=$param
-		SCRIPT_DIR=`(cd \`dirname ${SCRIPT_FILE}\`; pwd)`
-		# If the script file is a symbolic link
-		if [[ -L "${SCRIPT_FILE}" ]]
-		then
-			SCRIPT_FILE=`ls -la ${SCRIPT_FILE} | cut -d">" -f2`
-			SCRIPT_DIR=`(cd \`dirname ${SCRIPT_FILE}\`; pwd)`
-		fi
-		SCRIPT_BASENAME=$(basename ${SCRIPT_FILE})
-		SCRIPT_FILENAME=${SCRIPT_BASENAME%.*}
-		continue
-	fi
-
 	# SHOW_VERSION
-        if [ "$param" = "-v" ] || [ "$param" = "--version" ]; then
-                SHOW_VERSION="1"
-                break
-        fi
+  if [ "$param" = "-v" ] || [ "$param" = "--version" ]; then
+    SHOW_VERSION="1"
+    break
+  fi
 
 	# SHOW_HELP
 	if [ "$param" = "-h" ] || [ "$param" = "--help" ]; then
@@ -286,9 +283,9 @@ do
 	# CSV_FILE
 	if [ "${CSV_FILE}" = "" ]; then
 		CSV_FILE=$param
-		CSV_DIR=`(cd \`dirname ${CSV_FILE}\`; pwd)`
-                CSV_BASENAME=$(basename ${CSV_FILE})
-                CSV_FILENAME=${CSV_BASENAME%.*}
+		CSV_DIR=`(cd "\`dirname "${CSV_FILE}"\`"; pwd)`
+    CSV_BASENAME=$(basename "${CSV_FILE}")
+    CSV_FILENAME="${CSV_BASENAME%.*}"
 		if [ -z "${CSV_BASENAME##*.*}" ] ;then
 			CSV_EXTENSION="${CSV_BASENAME##*.}"
 		fi
@@ -376,7 +373,7 @@ if [ "${CSV_FILE}" = "" ]; then
         echo "- Error: The CSV file is missing ! Please use \"-h\" or \"--help\" for usage."
         exit 1
 fi
-if [ ! -f ${CSV_FILE} ]; then
+if [ ! -f "${CSV_FILE}" ]; then
         echo "- Error: The CSV file \"${CSV_FILE}\" doesn't exist !"
         exit 1
 fi
@@ -412,14 +409,16 @@ fi
 
 # If the Hive table name is missing, then we use the CSV file name minus extension
 if [ "${HIVE_TABLE_NAME}" = "" ]; then
-        HIVE_TABLE_NAME="${CSV_FILENAME}"
+  echo "$CSV_FILENAME"
+  HIVE_TABLE_NAME=`echo "${CSV_FILENAME}" | sed 's/[\s]*//g'`
+  echo "HIVE TABLE NAME: $HIVE_TABLE_NAME"
 fi
 # If the Hive table prefix or suffix exist, then we surround the Hive table name with them
 if [ ! "${HIVE_TABLE_PREFIX}" = "" ]; then
-        HIVE_TABLE_NAME="${HIVE_TABLE_PREFIX}${HIVE_TABLE_NAME}"
+    HIVE_TABLE_NAME="${HIVE_TABLE_PREFIX}${HIVE_TABLE_NAME}"
 fi
 if [ ! "${HIVE_TABLE_SUFFIX}" = "" ]; then
-        HIVE_TABLE_NAME="${HIVE_TABLE_NAME}${HIVE_TABLE_SUFFIX}"
+    HIVE_TABLE_NAME="${HIVE_TABLE_NAME}${HIVE_TABLE_SUFFIX}"
 fi
 
 # If the Parquet table name is missing but the Parquet database or the prefix or
@@ -474,7 +473,7 @@ HIVE_TABLE_FILE=${WORK_DIR}/${CSV_FILENAME}.hql
 PARQUET_TABLE_FILE=${WORK_DIR}/${CSV_FILENAME}.parquet
 
 # The vars for building the Hive template
-HIVE_TABLE_MODEL=`sed -e 's/^/\t/' ${SCHEMA_FILE}`
+HIVE_TABLE_MODEL=`sed -e 's/^/\t/' "${SCHEMA_FILE}"`
 HIVE_TABLE_DELIMITER=${CSV_DELIMITER}
 if [ "${HIVE_TABLE_DELIMITER}" = "\s" ]; then
         HIVE_TABLE_DELIMITER=" "
@@ -487,6 +486,7 @@ HIVE_SEP=""
 if [ ! "${HIVE_DB_NAME}" = "" ]; then
         HIVE_SEP="."
 fi
+
 HIVE_TEMPLATE="DROP TABLE ${HIVE_DB_NAME}${HIVE_SEP}${HIVE_TABLE_NAME};
 CREATE TABLE ${HIVE_DB_NAME}${HIVE_SEP}${HIVE_TABLE_NAME} (
 ${HIVE_TABLE_MODEL}
@@ -564,4 +564,3 @@ fi
 if [ "${PARENT_CALL}" = "1" ]; then
         rm -rf "${SCHEMA_FILE}"
 fi
-
