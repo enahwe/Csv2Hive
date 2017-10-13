@@ -401,7 +401,7 @@ if [ "${CSV_DELIMITER}" = "" ]; then
         CSV_DELIMITER=`python "${SCRIPT_DIR}/searchDelimiter.py" "${STRING_1}" "${STRING_2}" "${QUOTE_CHARACTER}"`
         if [ "${CSV_DELIMITER}" = "NO_DELIMITER" ]; then
                 echo "- Error: Delimiter not found !"
-		echo "         Maybe the number of delimiters are differents in the two first lines !"
+                echo "         Maybe the number of delimiters are differents in the two first lines !"
                 echo "         Or maybe you should check the quote character (-q option) !"
                 exit 1
         fi
@@ -409,9 +409,7 @@ fi
 
 # If the Hive table name is missing, then we use the CSV file name minus extension
 if [ "${HIVE_TABLE_NAME}" = "" ]; then
-  echo "$CSV_FILENAME"
-  HIVE_TABLE_NAME=`echo "${CSV_FILENAME}" | sed 's/[\s]*//g'`
-  echo "HIVE TABLE NAME: $HIVE_TABLE_NAME"
+  HIVE_TABLE_NAME=`echo "${CSV_FILENAME}" | sed 's/[[:space:]]]*//g'`
 fi
 # If the Hive table prefix or suffix exist, then we surround the Hive table name with them
 if [ ! "${HIVE_TABLE_PREFIX}" = "" ]; then

@@ -397,7 +397,6 @@ if [ "${CSV_NO_HEADER}" = "1" ]; then
 fi
 
 # Create with csvsql a DDL SQL file from the CSV file
-echo "CSVSQL_OPTS: $CSV_SHORT_FILE"
 csvsql ${CSVSQL_OPTS} "${CSV_SHORT_FILE}" > "${SCHEMA_FILE}"
 
 # Create the vi file containing the vi commands
