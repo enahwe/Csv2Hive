@@ -39,7 +39,7 @@ optional arguments:
 		Specify a separated header file that contains the header,
 		its delimiter must be the same as the delimiter in the CSV file.
 		Overrides --no-header.
-  -q QUOTE_CHARACTER, --quote-character QUOTE_CHARACTER 
+  -q QUOTE_CHARACTER, --quote-character QUOTE_CHARACTER
 		The quote character surrounding the fields.
   --create	Creates the table in Hive.
 		Overrides the previous Hive table, as well as its file in HDFS.
@@ -126,11 +126,10 @@ fi
 # -- PROG ----------------------------------------------------------------------
 
 # Create the schema automatically by using the CSVKIT library
-"${SCRIPT_DIR}/csv2schema.sh" --parent-call $@
+"${SCRIPT_DIR}/csv2schema.sh" --parent-call "$@"
 if [ "$?" = "1" ]; then
         exit 1
 fi
 
 # Generate the CREATE TABLE Hive statement and create the Hive table
-"${SCRIPT_DIR}/schema2hive.sh" --parent-call $@
-
+"${SCRIPT_DIR}/schema2hive.sh" --parent-call "$@"
